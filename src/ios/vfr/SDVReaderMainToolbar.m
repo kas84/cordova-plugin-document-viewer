@@ -126,8 +126,8 @@
         
         UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
         doneButton.frame = CGRectMake(leftButtonX, BUTTON_Y, doneButtonWidth, BUTTON_HEIGHT);
-        [doneButton setTitleColor:[UIColor colorWithWhite:0.0f alpha:1.0f] forState:UIControlStateNormal];
-        [doneButton setTitleColor:[UIColor colorWithWhite:1.0f alpha:1.0f] forState:UIControlStateHighlighted];
+        [doneButton setTitleColor:[UIColor colorWithWhite:1.0f alpha:1.0f] forState:UIControlStateNormal];
+        [doneButton setTitleColor:[UIColor colorWithWhite:1.0f alpha:0.8f] forState:UIControlStateHighlighted];
         [doneButton setTitle:doneButtonText forState:UIControlStateNormal]; doneButton.titleLabel.font = doneButtonFont;
         [doneButton addTarget:self action:@selector(doneButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [doneButton setBackgroundImage:buttonH forState:UIControlStateHighlighted];
@@ -278,7 +278,7 @@
         NSArray *buttonItems = [NSArray arrayWithObjects:singlePageButton, doublePageButton, coverPageButton, nil];
         
         BOOL useTint = [self respondsToSelector:@selector(tintColor)]; // iOS 7 and up
-
+        /*
         //don't show viewmode for single page documents
         if ([document.pageCount intValue] > 1)
         {
@@ -286,7 +286,7 @@
         
         UISegmentedControl *showControl = [[UISegmentedControl alloc] initWithItems:buttonItems];
         showControl.frame = CGRectMake(rightButtonX, BUTTON_Y, SHOW_CONTROL_WIDTH, BUTTON_HEIGHT);
-        showControl.tintColor = (useTint ? [UIColor blackColor] : [UIColor colorWithWhite:0.8f alpha:1.0f]);
+        showControl.tintColor = (useTint ? [UIColor whiteColor] : [UIColor colorWithWhite:0.8f alpha:1.0f]);
         showControl.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         showControl.segmentedControlStyle = UISegmentedControlStyleBar;
         showControl.selectedSegmentIndex = 0; // Default segment index
@@ -299,7 +299,7 @@
         //adjust available width for document title
         titleWidth -= (SHOW_CONTROL_WIDTH + buttonSpacing);
         }
-        
+        */
         if (largeDevice == YES) // Show document filename in toolbar
         {
             CGRect titleRect = CGRectMake(titleX, BUTTON_Y, titleWidth, TITLE_HEIGHT);
@@ -310,7 +310,7 @@
             titleLabel.font = [UIFont systemFontOfSize:TITLE_FONT_SIZE];
             titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
             titleLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
-            titleLabel.textColor = [UIColor colorWithWhite:0.0f alpha:1.0f];
+            titleLabel.textColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
             titleLabel.backgroundColor = [UIColor clearColor];
             titleLabel.adjustsFontSizeToFitWidth = YES;
             titleLabel.minimumScaleFactor = 0.75f;

@@ -1,9 +1,9 @@
 //
 //	ThumbsViewController.m
-//	Reader v2.8.6
+//	Reader v2.8.1
 //
 //	Created by Julius Oklamcak on 2011-09-01.
-//	Copyright © 2011-2015 Julius Oklamcak. All rights reserved.
+//	Copyright © 2011-2014 Julius Oklamcak. All rights reserved.
 //
 //	Permission is hereby granted, free of charge, to any person obtaining a copy
 //	of this software and associated documentation files (the "Software"), to deal
@@ -89,7 +89,7 @@
 			statusBarRect.size.height = STATUS_HEIGHT; // Default status height
 			fakeStatusBar = [[UIView alloc] initWithFrame:statusBarRect]; // UIView
 			fakeStatusBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-			fakeStatusBar.backgroundColor = [UIColor blackColor];
+			fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
 			fakeStatusBar.contentMode = UIViewContentModeRedraw;
 			fakeStatusBar.userInteractionEnabled = NO;
 
@@ -123,20 +123,9 @@
 	theThumbsView.delegate = self; // ReaderThumbsViewDelegate
 	[self.view insertSubview:theThumbsView belowSubview:mainToolbar];
 
-	if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone)
-	{
-		CGRect viewRect = self.view.bounds; CGSize viewSize = viewRect.size; // View size
-
-		CGFloat min = ((viewSize.width < viewSize.height) ? viewSize.width : viewSize.height);
-
-		CGFloat thumbSize = ((min > 320.0f) ? floorf(min / 3.0f) : PAGE_THUMB_SMALL);
-
-		[theThumbsView setThumbSize:CGSizeMake(thumbSize, thumbSize)];
-	}
-	else // Set thumb size for large (iPad) devices
-	{
-		[theThumbsView setThumbSize:CGSizeMake(PAGE_THUMB_LARGE, PAGE_THUMB_LARGE)];
-	}
+	BOOL large = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
+	CGFloat thumbSize = (large ? PAGE_THUMB_LARGE : PAGE_THUMB_SMALL); // Thumb dimensions
+	[theThumbsView setThumbSize:CGSizeMake(thumbSize, thumbSize)]; // Set the thumb size
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -282,10 +271,9 @@
 
 	[thumbCell showBookmark:[document.bookmarks containsIndex:page]]; // Show bookmarked status
 
-	NSString *guid = document.guid; NSString *phrase = document.password; // Document info
-	CGPDFDocumentRef *pdfDocumentRef = document.pdfDocumentRef;
+	NSURL *fileURL = document.fileURL; NSString *guid = document.guid; NSString *phrase = document.password; // Document info
 
-	ReaderThumbRequest *thumbRequest = [ReaderThumbRequest newForView:thumbCell pdfDocumentRef:pdfDocumentRef guid:guid page:page size:size];
+	ReaderThumbRequest *thumbRequest = [ReaderThumbRequest newForView:thumbCell fileURL:fileURL password:phrase guid:guid page:page size:size];
 
 	UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:thumbRequest priority:YES]; // Request the thumbnail
 

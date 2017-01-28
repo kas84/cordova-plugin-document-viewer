@@ -40,7 +40,7 @@
 {
     self = [super initWithReaderDocument:object];
     self.viewerOptions = options;
-    self.documentOutline = [SDVThumbsViewController flattenOutline:[ReaderDocumentOutline outlineFromDocument:object.pdfDocumentRef]];
+    self.documentOutline = [SDVThumbsViewController flattenOutline:[ReaderDocumentOutline outlineFromFileURL:object.fileURL password: nil]];
     NSLog(@"[pdfviewer] document-outline: %@", self.documentOutline);
 
     return self;
@@ -65,7 +65,7 @@
             statusBarRect.size.height = STATUS_HEIGHT; // Default status height
             fakeStatusBar = [[UIView alloc] initWithFrame:statusBarRect]; // UIView
             fakeStatusBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-            fakeStatusBar.backgroundColor = [UIColor blackColor];
+            fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
             fakeStatusBar.contentMode = UIViewContentModeRedraw;
             fakeStatusBar.userInteractionEnabled = NO;
             

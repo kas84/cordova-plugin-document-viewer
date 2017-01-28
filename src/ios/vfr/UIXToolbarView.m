@@ -1,9 +1,9 @@
 //
 //	UIXToolbarView.m
-//	Reader v2.8.6
+//	Reader v2.8.2
 //
 //	Created by Julius Oklamcak on 2011-09-01.
-//	Copyright © 2011-2015 Julius Oklamcak. All rights reserved.
+//	Copyright © 2011-2014 Julius Oklamcak. All rights reserved.
 //
 //	Permission is hereby granted, free of charge, to any person obtaining a copy
 //	of this software and associated documentation files (the "Software"), to deal
@@ -61,7 +61,7 @@
 			self.backgroundColor = [UIColor clearColor];
 
 			CAGradientLayer *layer = (CAGradientLayer *)self.layer;
-			UIColor *liteColor = [UIColor colorWithWhite:0.92f alpha:0.8f];
+			UIColor *liteColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
 			UIColor *darkColor = [UIColor colorWithWhite:0.32f alpha:0.8f];
 			layer.colors = [NSArray arrayWithObjects:(id)liteColor.CGColor, (id)darkColor.CGColor, nil];
 
@@ -73,7 +73,7 @@
 		}
 		else // Follow The Fuglyosity of Flat Fad
 		{
-			self.backgroundColor = [UIColor colorWithWhite:0.94f alpha:0.94f];
+			self.backgroundColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
 
 			CGRect lineRect = self.bounds; lineRect.origin.y += lineRect.size.height; lineRect.size.height = 1.0f;
 
@@ -120,7 +120,7 @@
 		self.backgroundColor = [UIColor clearColor];
 
 		CAGradientLayer *layer = (CAGradientLayer *)self.layer;
-		UIColor *blackColor = [UIColor colorWithWhite:0.24f alpha:1.0f];
+		UIColor *blackColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
 		UIColor *clearColor = [UIColor colorWithWhite:0.24f alpha:0.0f];
 		layer.colors = [NSArray arrayWithObjects:(id)blackColor.CGColor, (id)clearColor.CGColor, nil];
 	}

@@ -1,9 +1,9 @@
 //
 //	ReaderThumbRender.m
-//	Reader v2.8.6
+//	Reader v2.8.0
 //
 //	Created by Julius Oklamcak on 2011-09-01.
-//	Copyright © 2011-2015 Julius Oklamcak. All rights reserved.
+//	Copyright © 2011-2014 Julius Oklamcak. All rights reserved.
 //
 //	Permission is hereby granted, free of charge, to any person obtaining a copy
 //	of this software and associated documentation files (the "Software"), to deal
@@ -73,14 +73,15 @@
 
 - (void)main
 {
-	NSInteger page = request.thumbPage;
+	NSInteger page = request.thumbPage; NSString *password = request.password;
 
-	CGImageRef imageRef = NULL;
-	CGPDFDocumentRef pdfDocumentRef = request.pdfDocumentRef;
+	CGImageRef imageRef = NULL; CFURLRef fileURL = (__bridge CFURLRef)request.fileURL;
 
-	if (pdfDocumentRef != NULL) // Check for non-NULL CGPDFDocumentRef
+	CGPDFDocumentRef thePDFDocRef = CGPDFDocumentCreateUsingUrl(fileURL, password);
+
+	if (thePDFDocRef != NULL) // Check for non-NULL CGPDFDocumentRef
 	{
-		CGPDFPageRef thePDFPageRef = CGPDFDocumentGetPage(pdfDocumentRef, page);
+		CGPDFPageRef thePDFPageRef = CGPDFDocumentGetPage(thePDFDocRef, page);
 
 		if (thePDFPageRef != NULL) // Check for non-NULL CGPDFPageRef
 		{
@@ -156,7 +157,7 @@
 			CGColorSpaceRelease(rgb); // Release device RGB color space reference
 		}
 
-		//CGPDFDocumentRelease(thePDFDocRef),thePDFDocRef = NULL; // Release CGPDFDocumentRef reference
+		CGPDFDocumentRelease(thePDFDocRef); // Release CGPDFDocumentRef reference
 	}
 
 	if (imageRef != NULL) // Create UIImage from CGImage and show it, then save thumb as PNG

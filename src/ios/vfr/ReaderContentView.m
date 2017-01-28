@@ -1,9 +1,9 @@
 //
 //	ReaderContentView.m
-//	Reader v2.8.7
+//	Reader v2.8.3
 //
 //	Created by Julius Oklamcak on 2011-07-01.
-//	Copyright © 2011-2016 Julius Oklamcak. All rights reserved.
+//	Copyright © 2011-2014 Julius Oklamcak. All rights reserved.
 //
 //	Permission is hereby granted, free of charge, to any person obtaining a copy
 //	of this software and associated documentation files (the "Software"), to deal
@@ -41,12 +41,10 @@
 #define ZOOM_FACTOR 2.0f
 #define ZOOM_MAXIMUM 16.0f
 
-#define PAGE_THUMB_SMALL 144
 #define PAGE_THUMB_LARGE 240
+#define PAGE_THUMB_SMALL 144
 
 static void *ReaderContentViewContext = &ReaderContentViewContext;
-
-static CGFloat g_BugFixWidthInset = 0.0f;
 
 #pragma mark - Properties
 
@@ -54,43 +52,22 @@ static CGFloat g_BugFixWidthInset = 0.0f;
 
 #pragma mark - ReaderContentView functions
 
-static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source)
+static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bfwi)
 {
-	CGFloat w_scale = (target.width / (source.width + g_BugFixWidthInset));
+	CGFloat w_scale = (target.width / (source.width + bfwi));
 
 	CGFloat h_scale = (target.height / source.height);
 
 	return ((w_scale < h_scale) ? w_scale : h_scale);
 }
 
-#pragma mark - ReaderContentView class methods
-
-+ (void)initialize
-{
-	if (self == [ReaderContentView self]) // Do once - iOS 8.0 UIScrollView bug workaround
-	{
-		if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) // Not iPads
-		{
-			NSString *iosVersion = [UIDevice currentDevice].systemVersion; // iOS version as a string
-
-			if ([@"8.0" compare:iosVersion options:NSNumericSearch] != NSOrderedDescending) // 8.0 and up
-			{
-//				if ([@"8.2" compare:iosVersion options:NSNumericSearch] == NSOrderedDescending) // Below 8.2
-//				{
-					g_BugFixWidthInset = 2.0f * [[UIScreen mainScreen] scale]; // Reduce width of content view
-//				}
-			}
-		}
-	}
-}
-
 #pragma mark - ReaderContentView instance methods
 
 - (void)updateMinimumMaximumZoom
 {
-	CGFloat zoomScale = zoomScaleThatFits(self.bounds.size, theContentPage.bounds.size);
+	CGFloat zoomScale = zoomScaleThatFits(self.bounds.size, theContentPage.bounds.size, bugFixWidthInset);
 
-	self.minimumZoomScale = zoomScale; self.maximumZoomScale = (zoomScale * ZOOM_MAXIMUM);
+	self.minimumZoomScale = zoomScale; self.maximumZoomScale = (zoomScale * ZOOM_MAXIMUM); // Limits
 
 	realMaximumZoom = self.maximumZoomScale; tempMaximumZoom = (realMaximumZoom * ZOOM_FACTOR);
 }
@@ -110,7 +87,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source)
 	if (UIEdgeInsetsEqualToEdgeInsets(self.contentInset, insets) == false) self.contentInset = insets;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame pdfDocumentRef:(CGPDFDocumentRef *)pdfDocumentRef page:(NSUInteger)page
+- (instancetype)initWithFrame:(CGRect)frame fileURL:(NSURL *)fileURL page:(NSUInteger)page password:(NSString *)phrase
 {
 	if ((self = [super initWithFrame:frame]))
 	{
@@ -127,7 +104,19 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source)
 
 		userInterfaceIdiom = [UIDevice currentDevice].userInterfaceIdiom; // User interface idiom
 
-		theContentPage = [[ReaderContentPage alloc] initWithDocument:pdfDocumentRef page:page];
+#ifndef __arm64__ // Only under 32-bit iOS
+		if (userInterfaceIdiom == UIUserInterfaceIdiomPhone) // iOS 8.0 UIScrollView bug workaround
+		{
+			NSString *iosVersion = [UIDevice currentDevice].systemVersion; // iOS version as a string
+
+			if ([@"8.0" compare:iosVersion options:NSNumericSearch] != NSOrderedDescending) // 8.0 and up
+			{
+				bugFixWidthInset = 4.0f; // Slightly reduce width of content view
+			}
+		}
+#endif // End of only under 32-bit iOS code
+
+		theContentPage = [[ReaderContentPage alloc] initWithURL:fileURL page:page password:phrase];
 
 		if (theContentPage != nil) // Must have a valid and initialized content page
 		{
@@ -174,6 +163,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source)
 	return self;
 }
 
+//XXX:  ignore exceptions, that occur because observer has to be removed in subclass and subclass dealloc automatically calls super dealloc with arc
 - (void)dealloc
 {
     @try
@@ -220,13 +210,13 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source)
 	}
 }
 
-- (void)showPageThumb:(CGPDFDocumentRef *)pdfDocumentRef page:(NSInteger)page guid:(NSString *)guid
+- (void)showPageThumb:(NSURL *)fileURL page:(NSInteger)page password:(NSString *)phrase guid:(NSString *)guid
 {
 #if (READER_ENABLE_PREVIEW == TRUE) // Option
 
 	CGSize size = ((userInterfaceIdiom == UIUserInterfaceIdiomPad) ? CGSizeMake(PAGE_THUMB_LARGE, PAGE_THUMB_LARGE) : CGSizeMake(PAGE_THUMB_SMALL, PAGE_THUMB_SMALL));
 
-	ReaderThumbRequest *request = [ReaderThumbRequest newForView:theThumbView pdfDocumentRef:pdfDocumentRef guid:guid page:page size:size];
+	ReaderThumbRequest *request = [ReaderThumbRequest newForView:theThumbView fileURL:fileURL password:phrase guid:guid page:page size:size];
 
 	UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:request priority:YES]; // Request the page thumb
 

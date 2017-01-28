@@ -1,9 +1,9 @@
 //
 //	ReaderDocumentOutline.m
-//	Reader v2.8.6
+//	Reader v2.8.0
 //
 //	Created by Julius Oklamcak on 2012-09-01.
-//	Copyright © 2011-2015 Julius Oklamcak. All rights reserved.
+//	Copyright © 2011-2014 Julius Oklamcak. All rights reserved.
 //
 //	Permission is hereby granted, free of charge, to any person obtaining a copy
 //	of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@
 
 @interface ReaderDocumentOutline : NSObject <NSObject>
 
-+ (NSArray *)outlineFromDocument:(CGPDFDocumentRef)pdfDocumentRef;
++ (NSArray *)outlineFromFileURL:(NSURL *)fileURL password:(NSString *)phrase;
 
 + (void)logDocumentOutlineArray:(NSArray *)array;
 

@@ -1,9 +1,9 @@
 //
 //	ReaderMainPagebar.m
-//	Reader v2.8.6
+//	Reader v2.8.2
 //
 //	Created by Julius Oklamcak on 2011-09-01.
-//	Copyright © 2011-2015 Julius Oklamcak. All rights reserved.
+//	Copyright © 2011-2014 Julius Oklamcak. All rights reserved.
 //
 //	Permission is hereby granted, free of charge, to any person obtaining a copy
 //	of this software and associated documentation files (the "Software"), to deal
@@ -101,10 +101,9 @@
 
 		CGSize size = CGSizeMake(THUMB_LARGE_WIDTH, THUMB_LARGE_HEIGHT); // Maximum thumb size
 
-		NSString *guid = document.guid; NSString *phrase = document.password;
-		CGPDFDocumentRef *pdfDocumentRef = document.pdfDocumentRef;
+		NSURL *fileURL = document.fileURL; NSString *guid = document.guid; NSString *phrase = document.password;
 
-		ReaderThumbRequest *request = [ReaderThumbRequest newForView:pageThumbView pdfDocumentRef:pdfDocumentRef guid:guid page:page size:size];
+		ReaderThumbRequest *request = [ReaderThumbRequest newForView:pageThumbView fileURL:fileURL password:phrase guid:guid page:page size:size];
 
 		UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:request priority:YES]; // Request the thumb
 
@@ -156,7 +155,7 @@
 		}
 		else // Follow The Fuglyosity of Flat Fad
 		{
-			self.backgroundColor = [UIColor colorWithWhite:0.94f alpha:0.94f];
+			self.backgroundColor = [UIColor whiteColor];
 
 			CGRect lineRect = self.bounds; lineRect.size.height = 1.0f; lineRect.origin.y -= lineRect.size.height;
 
@@ -293,12 +292,11 @@
 		{
 			CGSize size = CGSizeMake(THUMB_SMALL_WIDTH, THUMB_SMALL_HEIGHT); // Maximum thumb size
 
-			NSString *guid = document.guid; NSString *phrase = document.password;
-			CGPDFDocumentRef *pdfDocumentRef = document.pdfDocumentRef;
+			NSURL *fileURL = document.fileURL; NSString *guid = document.guid; NSString *phrase = document.password;
 
 			smallThumbView = [[ReaderPagebarThumb alloc] initWithFrame:thumbRect small:YES]; // Create a small thumb view
 
-			ReaderThumbRequest *thumbRequest = [ReaderThumbRequest newForView:smallThumbView pdfDocumentRef:pdfDocumentRef guid:guid page:page size:size];
+			ReaderThumbRequest *thumbRequest = [ReaderThumbRequest newForView:smallThumbView fileURL:fileURL password:phrase guid:guid page:page size:size];
 
 			UIImage *image = [[ReaderThumbCache sharedInstance] thumbRequest:thumbRequest priority:NO]; // Request the thumb
 

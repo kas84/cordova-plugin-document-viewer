@@ -1,9 +1,9 @@
 //
 //	ReaderViewController.m
-//	Reader v2.8.6
+//	Reader v2.8.1
 //
 //	Created by Julius Oklamcak on 2011-07-01.
-//	Copyright © 2011-2015 Julius Oklamcak. All rights reserved.
+//	Copyright © 2011-2014 Julius Oklamcak. All rights reserved.
 //
 //	Permission is hereby granted, free of charge, to any person obtaining a copy
 //	of this software and associated documentation files (the "Software"), to deal
@@ -105,13 +105,12 @@
 	viewRect.origin.x = (viewRect.size.width * (page - 1)); viewRect = CGRectInset(viewRect, scrollViewOutset, 0.0f);
 
 	NSURL *fileURL = document.fileURL; NSString *phrase = document.password; NSString *guid = document.guid; // Document properties
-	CGPDFDocumentRef *pdfDocumentRef = document.pdfDocumentRef;
 
-	ReaderContentView *contentView = [[ReaderContentView alloc] initWithFrame:viewRect pdfDocumentRef:pdfDocumentRef page:page]; // ReaderContentView
+	ReaderContentView *contentView = [[ReaderContentView alloc] initWithFrame:viewRect fileURL:fileURL page:page password:phrase]; // ReaderContentView
 
 	contentView.message = self; [contentViews setObject:contentView forKey:[NSNumber numberWithInteger:page]]; [scrollView addSubview:contentView];
 
-	[contentView showPageThumb:pdfDocumentRef page:page guid:guid]; // Request page preview thumb
+	[contentView showPageThumb:fileURL page:page password:phrase guid:guid]; // Request page preview thumb
 }
 
 - (void)layoutContentViews:(UIScrollView *)scrollView
@@ -231,8 +230,6 @@
 
 - (void)showDocument
 {
-	[[ReaderThumbCache sharedInstance] removeAllObjects]; // Empty the thumb cache
-
 	[self updateContentSize:theScrollView]; // Update content size first
 
 	[self showDocumentPage:[document.pageNumber integerValue]]; // Show page
@@ -293,14 +290,7 @@
 
 - (void)dealloc
 {
-    @try
-    {
-	    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    }
-    @catch (NSException *e)
-    {
-        NSLog(@"ignored ReaderViewController dealloc exception");
-    }
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidLoad
@@ -320,7 +310,7 @@
 			CGRect statusBarRect = viewRect; statusBarRect.size.height = STATUS_HEIGHT;
 			fakeStatusBar = [[UIView alloc] initWithFrame:statusBarRect]; // UIView
 			fakeStatusBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-			fakeStatusBar.backgroundColor = [UIColor blackColor];
+			fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
 			fakeStatusBar.contentMode = UIViewContentModeRedraw;
 			fakeStatusBar.userInteractionEnabled = NO;
 

@@ -1,9 +1,9 @@
 //
 //	ReaderDocumentOutline.m
-//	Reader v2.8.6
+//	Reader v2.8.0
 //
 //	Created by Julius Oklamcak on 2012-09-01.
-//	Copyright © 2011-2015 Julius Oklamcak. All rights reserved.
+//	Copyright © 2011-2014 Julius Oklamcak. All rights reserved.
 //
 //	Permission is hereby granted, free of charge, to any person obtaining a copy
 //	of this software and associated documentation files (the "Software"), to deal
@@ -369,29 +369,35 @@ void logDictionaryEntry(const char *key, CGPDFObjectRef object, void *info)
 	} while (CGPDFDictionaryGetDictionary(outlineDictionary, "Next", &outlineDictionary) == true);
 }
 
-+ (NSArray *)outlineFromDocument:(CGPDFDocumentRef)pdfDocumentRef
++ (NSArray *)outlineFromFileURL:(NSURL *)fileURL password:(NSString *)phrase
 {
 	NSMutableArray *outlineArray = nil; // Mutable outline array
 
-    if (pdfDocumentRef != NULL) // Check for non-NULL CGPDFDocumentRef
-    {
-        CGPDFDictionaryRef outlines = NULL; // Document's outlines
+	if ((fileURL != nil) && [fileURL isFileURL]) // Check for valid file URL
+	{
+		CGPDFDocumentRef document = CGPDFDocumentCreateUsingUrl((__bridge CFURLRef)fileURL, phrase);
 
-        CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(pdfDocumentRef);
+		if (document != NULL) // Check for non-NULL CGPDFDocumentRef
+		{
+			CGPDFDictionaryRef outlines = NULL; // Document's outlines
 
-        if (CGPDFDictionaryGetDictionary(catalog, "Outlines", &outlines) == true)
-        {
-            CGPDFDictionaryRef firstItem = NULL; // First outline item entry
+			CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(document);
 
-            if (CGPDFDictionaryGetDictionary(outlines, "First", &firstItem) == true)
-            {
-                outlineArray = [NSMutableArray array]; // Top level outline entries array
+			if (CGPDFDictionaryGetDictionary(catalog, "Outlines", &outlines) == true)
+			{
+				CGPDFDictionaryRef firstItem = NULL; // First outline item entry
 
-                [self outlineItems:firstItem document:pdfDocumentRef array:outlineArray level:0];
-            }
-        }
+				if (CGPDFDictionaryGetDictionary(outlines, "First", &firstItem) == true)
+				{
+					outlineArray = [NSMutableArray array]; // Top level outline entries array
 
-    }
+					[self outlineItems:firstItem document:document array:outlineArray level:0];
+				}
+			}
+
+			CGPDFDocumentRelease(document); // Cleanup
+		}
+	}
 
 	//[self logDocumentOutlineArray:outlineArray]; // Log it
 
