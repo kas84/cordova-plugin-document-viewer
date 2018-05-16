@@ -1000,7 +1000,7 @@
 
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options
 {
-    self = [super initWithReaderDocument:object];
+    self = [super initWithReaderDocument:object options:options];
     self.viewerOptions = options;
     return self;
 }
@@ -1023,7 +1023,13 @@
             CGRect statusBarRect = viewRect; statusBarRect.size.height = STATUS_HEIGHT;
             fakeStatusBar = [[UIView alloc] initWithFrame:statusBarRect]; // UIView
             fakeStatusBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-            fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
+            NSNumber *toolbarR = [[self.viewerOptions objectForKey: @"rgb"] objectForKey: @"r"];
+            NSNumber *toolbarG = [[self.viewerOptions objectForKey: @"rgb"] objectForKey: @"g"];
+            NSNumber *toolbarB = [[self.viewerOptions objectForKey: @"rgb"] objectForKey: @"b"];
+            
+            fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:([toolbarR floatValue]/255.0f) green:[toolbarG floatValue]/255.0f blue:[toolbarB floatValue]/255.0f alpha:1.0f];
+            
+            //fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
             fakeStatusBar.contentMode = UIViewContentModeRedraw;
             fakeStatusBar.userInteractionEnabled = NO;
             

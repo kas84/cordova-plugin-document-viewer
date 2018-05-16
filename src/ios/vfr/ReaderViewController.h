@@ -66,12 +66,14 @@
     NSDate *lastHideTime;
     
     BOOL ignoreDidScroll;
+    
+    NSMutableDictionary *options;
 }
 
 
 @property (nonatomic, weak, readwrite) id <ReaderViewControllerDelegate> delegate;
 
-- (instancetype)initWithReaderDocument:(ReaderDocument *)object;
+- (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options;
 
 - (void)updateContentViews:(UIScrollView *)scrollView;
 

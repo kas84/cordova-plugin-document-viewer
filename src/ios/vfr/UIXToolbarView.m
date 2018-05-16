@@ -47,7 +47,7 @@
 
 #pragma mark - UIXToolbarView instance methods
 
-- (instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame options:(NSMutableDictionary *)options
 {
 	if ((self = [super initWithFrame:frame]))
 	{
@@ -73,7 +73,10 @@
 		}
 		else // Follow The Fuglyosity of Flat Fad
 		{
-			self.backgroundColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
+            NSNumber *toolbarR = [[options objectForKey: @"rgb"] objectForKey: @"r"];
+            NSNumber *toolbarG = [[options objectForKey: @"rgb"] objectForKey: @"g"];
+            NSNumber *toolbarB = [[options objectForKey: @"rgb"] objectForKey: @"b"];
+			self.backgroundColor = [UIColor colorWithDisplayP3Red:([toolbarR floatValue]/255.0f) green:[toolbarG floatValue]/255.0f blue:[toolbarB floatValue]/255.0f alpha:1.0f];
 
 			CGRect lineRect = self.bounds; lineRect.origin.y += lineRect.size.height; lineRect.size.height = 1.0f;
 

@@ -55,16 +55,20 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-	return [self initWithFrame:frame document:nil];
+    return [self initWithFrame:frame document:nil options:nil];
 }
 
-- (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document
+- (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document options:(NSMutableDictionary *)options
 {
 	assert(document != nil); // Must have a valid ReaderDocument
-
-	if ((self = [super initWithFrame:frame]))
+    if ((self = [super initWithFrame:frame options:options]))
 	{
-		CGFloat viewWidth = self.bounds.size.width; // Toolbar view width
+        
+        //HACK
+        return self;
+        //END HACK
+        
+        CGFloat viewWidth = self.bounds.size.width; // Toolbar view width
 
 #if (READER_FLAT_UI == TRUE) // Option
 		UIImage *buttonH = nil; UIImage *buttonN = nil;

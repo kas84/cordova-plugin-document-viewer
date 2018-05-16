@@ -51,11 +51,12 @@
     
     UIImage *markImageN;
     UIImage *markImageY;
+    NSMutableDictionary *options;
 }
 
 @property (nonatomic, weak, readwrite) id <ReaderMainToolbarDelegate> delegate;
 
-- (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document;
+- (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document options:(NSMutableDictionary *)options;
 
 - (void)setBookmarkState:(BOOL)state;
 

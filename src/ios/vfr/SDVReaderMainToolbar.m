@@ -95,7 +95,7 @@
     
     assert(document != nil); // Must have a valid ReaderDocument
     
-    if ((self = [super initWithFrame:frame document: document]))
+    if ((self = [super initWithFrame:frame document: document options:[options copy]]))
     {
         CGFloat viewWidth = self.bounds.size.width; // Toolbar view width
         

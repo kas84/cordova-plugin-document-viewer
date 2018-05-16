@@ -26,7 +26,7 @@
 #import <UIKit/UIKit.h>
 
 @interface UIXToolbarView : UIView
-
+- (instancetype)initWithFrame:(CGRect)frame options:(NSMutableDictionary *)options;
 @end
 
 #pragma mark -

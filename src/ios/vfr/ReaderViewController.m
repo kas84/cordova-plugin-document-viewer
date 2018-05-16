@@ -259,7 +259,7 @@
 
 #pragma mark - UIViewController methods
 
-- (instancetype)initWithReaderDocument:(ReaderDocument *)object
+- (instancetype)initWithReaderDocument:(ReaderDocument *)object options:(NSMutableDictionary *)options
 {
 	if ((self = [super initWithNibName:nil bundle:nil])) // Initialize superclass
 	{
@@ -276,6 +276,7 @@
 			scrollViewOutset = ((userInterfaceIdiom == UIUserInterfaceIdiomPad) ? SCROLLVIEW_OUTSET_LARGE : SCROLLVIEW_OUTSET_SMALL);
 
 			[object updateDocumentProperties]; document = object; // Retain the supplied ReaderDocument object for our use
+            self->options = options;
 
 			[ReaderThumbCache touchThumbCacheWithGUID:object.guid]; // Touch the document thumb cache directory
 		}
@@ -310,7 +311,14 @@
 			CGRect statusBarRect = viewRect; statusBarRect.size.height = STATUS_HEIGHT;
 			fakeStatusBar = [[UIView alloc] initWithFrame:statusBarRect]; // UIView
 			fakeStatusBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-			fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
+            
+            NSNumber *toolbarR = [[self->options objectForKey: @"rgb"] objectForKey: @"r"];
+            NSNumber *toolbarG = [[self->options objectForKey: @"rgb"] objectForKey: @"g"];
+            NSNumber *toolbarB = [[self->options objectForKey: @"rgb"] objectForKey: @"b"];
+            
+            fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:([toolbarR floatValue]/255.0f) green:[toolbarG floatValue]/255.0f blue:[toolbarB floatValue]/255.0f alpha:1.0f];
+            
+			//fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
 			fakeStatusBar.contentMode = UIViewContentModeRedraw;
 			fakeStatusBar.userInteractionEnabled = NO;
 
@@ -328,7 +336,7 @@
 	[self.view addSubview:theScrollView];
 
 	CGRect toolbarRect = viewRect; toolbarRect.size.height = TOOLBAR_HEIGHT;
-	mainToolbar = [[ReaderMainToolbar alloc] initWithFrame:toolbarRect document:document]; // ReaderMainToolbar
+    mainToolbar = [[ReaderMainToolbar alloc] initWithFrame:toolbarRect document:document options:options]; // ReaderMainToolbar
 	mainToolbar.delegate = self; // ReaderMainToolbarDelegate
 	[self.view addSubview:mainToolbar];
 
