@@ -89,7 +89,13 @@
 			statusBarRect.size.height = STATUS_HEIGHT; // Default status height
 			fakeStatusBar = [[UIView alloc] initWithFrame:statusBarRect]; // UIView
 			fakeStatusBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-			fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
+            if (![UIColor respondsToSelector:@selector(colorWithDisplayP3Red)]){
+                NSLog(@"No responde a color with Display");
+                fakeStatusBar.backgroundColor = [UIColor colorWithRed:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1];
+            }
+            else{
+                fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
+            }
 			fakeStatusBar.contentMode = UIViewContentModeRedraw;
 			fakeStatusBar.userInteractionEnabled = NO;
 

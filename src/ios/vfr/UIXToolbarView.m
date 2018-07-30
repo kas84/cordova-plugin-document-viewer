@@ -61,7 +61,15 @@
 			self.backgroundColor = [UIColor clearColor];
 
 			CAGradientLayer *layer = (CAGradientLayer *)self.layer;
-			UIColor *liteColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
+            UIColor *liteColor;
+            
+            if (![UIColor respondsToSelector:@selector(colorWithDisplayP3Red)]){
+                NSLog(@"No responde a color with Display");
+                liteColor = [UIColor colorWithRed:224.0f/255.0f green:124.0f/255.0f blue:0.0f alpha:1];
+            }
+            else{
+                liteColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
+            }
 			UIColor *darkColor = [UIColor colorWithWhite:0.32f alpha:0.8f];
 			layer.colors = [NSArray arrayWithObjects:(id)liteColor.CGColor, (id)darkColor.CGColor, nil];
 
@@ -76,7 +84,15 @@
             NSNumber *toolbarR = [[options objectForKey: @"rgb"] objectForKey: @"r"];
             NSNumber *toolbarG = [[options objectForKey: @"rgb"] objectForKey: @"g"];
             NSNumber *toolbarB = [[options objectForKey: @"rgb"] objectForKey: @"b"];
-			self.backgroundColor = [UIColor colorWithDisplayP3Red:([toolbarR floatValue]/255.0f) green:[toolbarG floatValue]/255.0f blue:[toolbarB floatValue]/255.0f alpha:1.0f];
+            
+            if (![UIColor respondsToSelector:@selector(colorWithDisplayP3Red)]){
+                NSLog(@"No responde a color with Display");
+                self.backgroundColor = [UIColor colorWithRed:[toolbarR floatValue]/255.0f green:[toolbarG floatValue]/255.0f blue:[toolbarB floatValue]/255.0f alpha:1];
+            }
+            else{
+                self.backgroundColor = [UIColor colorWithDisplayP3Red:([toolbarR floatValue]/255.0f) green:[toolbarG floatValue]/255.0f blue:[toolbarB floatValue]/255.0f alpha:1.0f];
+            }
+            
 
 			CGRect lineRect = self.bounds; lineRect.origin.y += lineRect.size.height; lineRect.size.height = 1.0f;
 
@@ -123,7 +139,14 @@
 		self.backgroundColor = [UIColor clearColor];
 
 		CAGradientLayer *layer = (CAGradientLayer *)self.layer;
-		UIColor *blackColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
+        UIColor *blackColor;
+        if (![UIColor respondsToSelector:@selector(colorWithDisplayP3Red)]){
+            NSLog(@"No responde a color with Display");
+            blackColor = [UIColor colorWithRed:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1];
+        }
+        else{
+            blackColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
+        }
 		UIColor *clearColor = [UIColor colorWithWhite:0.24f alpha:0.0f];
 		layer.colors = [NSArray arrayWithObjects:(id)blackColor.CGColor, (id)clearColor.CGColor, nil];
 	}

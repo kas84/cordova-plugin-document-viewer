@@ -1026,8 +1026,13 @@
             NSNumber *toolbarR = [[self.viewerOptions objectForKey: @"rgb"] objectForKey: @"r"];
             NSNumber *toolbarG = [[self.viewerOptions objectForKey: @"rgb"] objectForKey: @"g"];
             NSNumber *toolbarB = [[self.viewerOptions objectForKey: @"rgb"] objectForKey: @"b"];
-            
-            fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:([toolbarR floatValue]/255.0f) green:[toolbarG floatValue]/255.0f blue:[toolbarB floatValue]/255.0f alpha:1.0f];
+            if (![UIColor respondsToSelector:@selector(colorWithDisplayP3Red)]){
+                NSLog(@"No responde a color with Display");
+                fakeStatusBar.backgroundColor = [UIColor colorWithRed:[toolbarR floatValue]/255.0f green:[toolbarG floatValue]/255.0f blue:[toolbarB floatValue]/255.0f alpha:1];
+            }
+            else{
+                fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:([toolbarR floatValue]/255.0f) green:[toolbarG floatValue]/255.0f blue:[toolbarB floatValue]/255.0f alpha:1.0f];
+            }
             
             //fakeStatusBar.backgroundColor = [UIColor colorWithDisplayP3Red:(224.0f/255.0f) green:124.0f/255.0f blue:0.0f alpha:1.0f];
             fakeStatusBar.contentMode = UIViewContentModeRedraw;
