@@ -1260,12 +1260,30 @@
                         }
                     }
                     
-                    if ([[UIApplication sharedApplication] openURL:url] == NO)
-                    {
-#ifdef DEBUG
-                        NSLog(@"%s '%@'", __FUNCTION__, url); // Bad or unknown URL
-#endif
-                    }
+//                     if ([[UIApplication sharedApplication] openURL:url] == NO)
+//                     {
+// #ifdef DEBUG
+//                         NSLog(@"%s '%@'", __FUNCTION__, url); // Bad or unknown URL
+// #endif
+//                     }
+if (@available(iOS 10.0, *)) {
+						[[UIApplication sharedApplication] openURL:url
+														options:@{}
+												completionHandler:^(BOOL success) {
+							if (!success) {
+					#ifdef DEBUG
+								NSLog(@"%s '%@' (failed to open)", __FUNCTION__, url);
+					#endif
+							}
+						}];
+					} else {
+						BOOL success = [[UIApplication sharedApplication] openURL:url];
+						if (!success) {
+					#ifdef DEBUG
+							NSLog(@"%s '%@' (failed to open - legacy API)", __FUNCTION__, url);
+					#endif
+						}
+					}
                 }
                 else // Not a URL, so check for another possible object type
                 {
